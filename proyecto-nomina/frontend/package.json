@@ -1,0 +1,21 @@
+{
+  "name": "nomina-frontend",
+  "version": "1.0.0",
+  "description": "Frontend React del Sistema de Nomina - Consulting, S.A.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "bootstrap-icons": "^1.13.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.1"
+  }
+}

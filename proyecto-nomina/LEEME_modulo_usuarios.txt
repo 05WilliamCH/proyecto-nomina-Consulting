@@ -1,0 +1,13 @@
+MODULO DE USUARIOS — archivos para copiar sobre su proyecto (misma ruta)
+
+NUEVOS (copiar):
+  frontend/src/pages/Perfil.jsx      -> "Mi perfil" (todos los roles)
+  frontend/src/pages/Usuarios.jsx    -> administracion de usuarios (solo Administrador)
+
+REEMPLAZAR (ya existian):
+  backend/src/routes/usuarios.js     -> agrega GET /me y PUT /me/password; el resto sigue solo-Administrador
+  backend/src/services/authService.js-> agrega la funcion cambiarPassword()
+  frontend/src/App.jsx               -> agrega enlaces "Usuarios" y "Mi perfil" y sus rutas
+
+No hay cambios en la base de datos: no hace falta volver a ejecutar db:init.
+No toca empleados.js, Empleados.jsx, schema.sql ni seed.sql.

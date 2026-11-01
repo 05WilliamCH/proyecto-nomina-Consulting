@@ -1,0 +1,458 @@
+/* ================================================================
+   Estilos personalizados — complementan Bootstrap 5.3
+   Solo se sobreescriben los tokens propios del sistema de nómina.
+   No se redefinen clases de Bootstrap que ya funcionan correctamente.
+   ================================================================ */
+:root {
+  --bs-primary:       #1f3a5f;
+  --bs-primary-rgb:   31, 58, 95;
+  --navy:             #1f3a5f;
+  --navy-dark:        #16293f;
+  --accent:           #c76b2e;
+  --accent-dark:      #a8571f;
+  --green:            #2e7d4f;
+  --danger-custom:    #a3372f;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────────── */
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  flex-shrink: 0;
+  background: var(--navy);
+  color: white;
+  padding: 24px 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar h1 {
+  font-size: 14.5px;
+  font-weight: 700;
+  padding: 0 18px 18px;
+  margin: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  line-height: 1.4;
+}
+.sidebar nav { display: flex; flex-direction: column; margin-top: 12px; }
+.sidebar nav a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  border-left: 3px solid transparent;
+  transition: background .12s;
+}
+.sidebar nav a:hover   { background: rgba(255,255,255,0.08); }
+.sidebar nav a.active  { background: rgba(255,255,255,0.13); border-left-color: var(--accent); font-weight: 600; }
+.sidebar-user {
+  margin-top: auto;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+.sidebar-user-name  { font-size: 13px; font-weight: 700; color: white; }
+.sidebar-user-role  { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+.btn-logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: white;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: background .12s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+/* ── Layout ────────────────────────────────────────────────────── */
+.layout { display: flex; min-height: 100vh; }
+.main   { flex: 1; padding: 26px 32px; overflow-x: hidden; }
+
+/* ── Page header ───────────────────────────────────────────────── */
+.page-title    { font-size: 21px; font-weight: 700; color: var(--navy); margin: 0 0 3px; }
+.page-subtitle { color: #647186; margin: 0 0 20px; font-size: 13.5px; }
+
+/* ── Login screen ──────────────────────────────────────────────── */
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 55%, #0f1c2c 100%);
+}
+.login-card {
+  background: white;
+  border-radius: 10px;
+  padding: 36px 34px;
+  width: 340px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+.login-title    { font-size: 19px; font-weight: 700; color: var(--navy); margin: 0 0 3px; text-align: center; }
+.login-subtitle { font-size: 13px; color: #647186; margin: 0 0 22px; text-align: center; }
+
+/* ── Navbar brand color override ───────────────────────────────── */
+.navbar-brand { color: white !important; font-weight: 700; }
+
+/* ── Badge custom ──────────────────────────────────────────────── */
+.badge-activo   { background: #e1f0e6 !important; color: var(--green)  !important; }
+.badge-inactivo { background: #f3e4e2 !important; color: var(--danger-custom) !important; }
+
+/* ── Modal header navy ─────────────────────────────────────────── */
+.modal-header-navy {
+  background: var(--navy);
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+.modal-header-navy .btn-close { filter: invert(1); }
+
+/* ── DPI / NIT field hint ──────────────────────────────────────── */
+.field-hint { font-size: 11.5px; color: #888; margin-top: 2px; }
+
+
+
+/* =================================
+   PANTALLA PRINCIPAL
+================================= */
+
+.login-screen {
+  min-height: 100vh;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 1150px;
+  min-height: 680px;
+  background: #ffffff;
+  display: flex;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12);
+}
+
+/* =================================
+   PANEL DEL FORMULARIO
+================================= */
+
+.login-form-panel {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 55px 65px;
+}
+
+.login-content {
+  width: 100%;
+  max-width: 390px;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 55px;
+}
+
+.login-brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 12px;
+  background: #e0eaff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+}
+
+/* =================================
+   ENCABEZADO
+================================= */
+
+.login-heading {
+  margin-bottom: 35px;
+}
+
+.login-heading h1 {
+  font-size: 34px;
+  font-weight: 750;
+  color: #172554;
+  margin-bottom: 10px;
+}
+
+.login-heading p {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* =================================
+   CAMPOS
+================================= */
+
+.login-field {
+  margin-bottom: 23px;
+}
+
+.login-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 650;
+  color: #334155;
+  margin-bottom: 9px;
+}
+
+.login-input-wrapper {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border: 1px solid #dbe3ee;
+  border-radius: 9px;
+  background: #f8fafc;
+  transition: 0.2s ease;
+}
+
+.login-input-wrapper i {
+  color: #94a3b8;
+  font-size: 18px;
+}
+
+.login-input-wrapper input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.login-input-wrapper:focus-within {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.login-input-wrapper input::placeholder {
+  color: #a0aec0;
+}
+
+/* =================================
+   OPCIONES
+================================= */
+
+.login-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+  margin-bottom: 28px;
+}
+
+.login-options a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.login-options a:hover {
+  text-decoration: underline;
+}
+
+/* =================================
+   BOTÓN
+================================= */
+
+.login-button {
+  width: 100%;
+  min-height: 53px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: 0.25s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
+  transform: translateY(-1px);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* =================================
+   PIE DEL FORMULARIO
+================================= */
+
+.login-footer {
+  margin-top: 45px;
+  text-align: center;
+}
+
+.login-footer p {
+  color: #334155;
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.login-footer span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* =================================
+   PANEL VISUAL
+================================= */
+
+.login-visual-panel {
+  width: 50%;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 35, 83, 0.94),
+      rgba(30, 64, 175, 0.88)
+    ),
+    linear-gradient(45deg, #172554, #3b82f6);
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
+
+.visual-overlay {
+  width: 100%;
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 65px;
+  position: relative;
+}
+
+.visual-content {
+  max-width: 430px;
+}
+
+.visual-icon {
+  width: 75px;
+  height: 75px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.12);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  margin-bottom: 35px;
+}
+
+.visual-content h2 {
+  font-size: 35px;
+  line-height: 1.3;
+  font-weight: 750;
+  margin-bottom: 20px;
+}
+
+.visual-content p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 35px;
+}
+
+.visual-features {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.visual-features div {
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+}
+
+.visual-features i {
+  color: #93c5fd;
+  margin-right: 12px;
+}
+
+.visual-bottom {
+  position: absolute;
+  bottom: 30px;
+  left: 65px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.55);
+}
+
+/* =================================
+   RESPONSIVE
+================================= */
+
+@media (max-width: 900px) {
+  .login-container {
+    max-width: 550px;
+    min-height: auto;
+  }
+
+  .login-form-panel {
+    width: 100%;
+    padding: 55px 45px;
+  }
+
+  .login-visual-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-screen {
+    padding: 15px;
+    background: #ffffff;
+  }
+
+  .login-container {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .login-form-panel {
+    padding: 35px 10px;
+  }
+
+  .login-brand {
+    margin-bottom: 40px;
+  }
+
+  .login-heading h1 {
+    font-size: 29px;
+  }
+
+  .login-footer {
+    margin-top: 35px;
+  }
+}
