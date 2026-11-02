@@ -19,6 +19,13 @@ export default function Empleados() {
   const [toast,         setToast]         = useState(null);
   const [filtro,        setFiltro]        = useState("Activo");
 
+  //filtros de busqueda
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroDepartamento, setFiltroDepartamento] = useState("");
+  const [filtroPuesto, setFiltroPuesto] = useState("");
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [registrosPorPagina, setRegistrosPorPagina] = useState(10);
+
   const modalFormRef   = useRef(null);
   const modalDeleteRef = useRef(null);
 
@@ -109,6 +116,48 @@ export default function Empleados() {
 
   const f = (campo) => (e) => setForm({ ...form, [campo]: e.target.value });
 
+  // ── FILTRADO Y PAGINACIÓN ─────────────────────────────────────
+  const empleadosFiltrados = empleados.filter((emp) => {
+  const texto = busqueda.toLowerCase().trim();
+
+  const coincideBusqueda =
+    !texto ||
+    [
+      emp.nombres,
+      emp.apellidos,
+      emp.dpi,
+      emp.nit,
+      emp.email,
+    ].some((valor) =>
+      String(valor || "").toLowerCase().includes(texto)
+    );
+
+  const coincideDepartamento =
+    !filtroDepartamento ||
+    String(emp.id_departamento) === filtroDepartamento;
+
+  const coincidePuesto =
+    !filtroPuesto ||
+    String(emp.id_puesto) === filtroPuesto;
+
+  return (
+    coincideBusqueda &&
+    coincideDepartamento &&
+    coincidePuesto
+  );
+});
+
+const totalPaginas = Math.ceil(
+  empleadosFiltrados.length / registrosPorPagina
+);
+
+const inicio = (paginaActual - 1) * registrosPorPagina;
+
+const empleadosPaginados = empleadosFiltrados.slice(
+  inicio,
+  inicio + registrosPorPagina
+);
+
   return (
     <div>
       {toast && (
@@ -125,7 +174,8 @@ export default function Empleados() {
           <p className="page-subtitle mb-0">Alta, consulta, edición e inactivación de personal (RF-01).</p>
         </div>
         <button className="btn btn-sm text-white" style={{ background:"var(--accent)" }} onClick={abrirCrear}>
-          + Nuevo empleado
+          <i className="bi bi-person-plus me-2"></i>
+          Nuevo empleado
         </button>
       </div>
 
@@ -140,6 +190,72 @@ export default function Empleados() {
         ))}
       </div>
 
+      <div className="row g-2 mb-3">
+  <div className="col-md-4">
+    <input
+      type="text"
+      className="form-control"
+      placeholder="Buscar por nombre, DPI o NIT..."
+      value={busqueda}
+      onChange={(e) => {
+        setBusqueda(e.target.value);
+        setPaginaActual(1);
+      }}
+    />
+  </div>
+
+  <div className="col-md-3">
+    <select
+      className="form-select"
+      value={filtroDepartamento}
+      onChange={(e) => {
+        setFiltroDepartamento(e.target.value);
+        setPaginaActual(1);
+      }}
+    >
+      <option value="">Todos los departamentos</option>
+      {departamentos.map((d) => (
+        <option key={d.id_departamento} value={d.id_departamento}>
+          {d.nombre}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div className="col-md-3">
+    <select
+      className="form-select"
+      value={filtroPuesto}
+      onChange={(e) => {
+        setFiltroPuesto(e.target.value);
+        setPaginaActual(1);
+      }}
+    >
+      <option value="">Todos los puestos</option>
+      {puestos.map((p) => (
+        <option key={p.id_puesto} value={p.id_puesto}>
+          {p.nombre}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div className="col-md-2">
+    <select
+      className="form-select"
+      value={registrosPorPagina}
+      onChange={(e) => {
+        setRegistrosPorPagina(Number(e.target.value));
+        setPaginaActual(1);
+      }}
+    >
+      <option value={10}>10 registros</option>
+      <option value={15}>15 registros</option>
+      <option value={25}>25 registros</option>
+    </select>
+  </div>
+</div>
+
       <div className="table-responsive rounded shadow-sm">
         <table className="table table-hover table-striped table-bordered mb-0 align-middle" style={{ fontSize:13.5 }}>
           <thead style={{ background:"var(--navy)", color:"white" }}>
@@ -151,9 +267,9 @@ export default function Empleados() {
             </tr>
           </thead>
           <tbody>
-            {empleados.map((emp) => (
+            {empleadosPaginados.map((emp, index) => (
               <tr key={emp.id_empleado}>
-                <td className="text-muted">{emp.id_empleado}</td>
+                <td className="text-muted">{inicio + index + 1}</td>
                 <td><strong>{emp.nombres} {emp.apellidos}</strong></td>
                 <td className="font-monospace" style={{ fontSize:12.5 }}>{emp.dpi ?? <span className="text-muted">—</span>}</td>
                 <td className="font-monospace" style={{ fontSize:12.5 }}>{emp.nit ?? <span className="text-muted">—</span>}</td>
@@ -170,29 +286,65 @@ export default function Empleados() {
                 </td>
                 <td className="text-center" style={{ whiteSpace:"nowrap" }}>
                   <button className="btn btn-sm btn-outline-primary me-1" title="Editar" onClick={() => abrirEditar(emp)}>
-                    ✏️
+                    <i className="bi bi-pencil-square"></i>
                   </button>
                   {emp.estado==="Activo" && (
                     <button className="btn btn-sm btn-outline-danger" title="Inactivar" onClick={() => abrirEliminar(emp)}>
-                      🗑️
+                      <i className="bi bi-person-dash"></i>
                     </button>
                   )}
                 </td>
               </tr>
             ))}
-            {!empleados.length && (
-              <tr><td colSpan={9} className="text-center text-muted py-4">No hay empleados que mostrar.</td></tr>
+            {!empleadosPaginados.length && (
+              <tr><td colSpan={10} className="text-center text-muted py-4">No hay empleados que mostrar.</td></tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+  <small className="text-muted">
+    Mostrando{" "}
+    {empleadosFiltrados.length === 0 ? 0 : inicio + 1}
+    {" - "}
+    {Math.min(inicio + registrosPorPagina, empleadosFiltrados.length)}
+    {" de "}
+    {empleadosFiltrados.length} empleados
+  </small>
+
+  <div className="d-flex gap-2 align-items-center">
+    <button
+      className="btn btn-outline-secondary btn-sm"
+      disabled={paginaActual <= 1}
+      onClick={() => setPaginaActual((p) => p - 1)}
+    >
+      <i className="bi bi-chevron-left"></i>
+    </button>
+
+    <span className="small">
+      Página {totalPaginas === 0 ? 0 : paginaActual} de {totalPaginas}
+    </span>
+
+    <button
+      className="btn btn-outline-secondary btn-sm"
+      disabled={paginaActual >= totalPaginas}
+      onClick={() => setPaginaActual((p) => p + 1)}
+    >
+      <i className="bi bi-chevron-right"></i>
+    </button>
+  </div>
+</div>
 
       {/* ── MODAL: Crear / Editar ─────────────────────────────── */}
       <div className="modal fade" ref={modalFormRef} tabIndex={-1} data-bs-backdrop="static">
         <div className="modal-dialog modal-lg modal-dialog-scrollable">
           <div className="modal-content">
             <div className="modal-header modal-header-navy">
-              <h5 className="modal-title">{editId ? "✏️ Editar empleado" : "➕ Nuevo empleado"}</h5>
+            <h5 className="modal-title">
+              <i className={`bi ${editId ? "bi-pencil-square" : "bi-person-plus"} me-2`}></i>
+              {editId ? "Editar empleado" : "Nuevo empleado"}
+            </h5>
               <button type="button" className="btn-close" data-bs-dismiss="modal" />
             </div>
             <form onSubmit={guardar}>
@@ -334,7 +486,10 @@ export default function Empleados() {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header" style={{ background:"#f3e4e2" }}>
-              <h5 className="modal-title" style={{ color:"#a3372f" }}>🗑️ Confirmar inactivación</h5>
+              <h5 className="modal-title" style={{ color:"#a3372f" }}>
+                <i className="bi bi-exclamation-triangle me-2"></i>
+                Confirmar inactivación
+              </h5>
               <button type="button" className="btn-close" data-bs-dismiss="modal" />
             </div>
             <div className="modal-body">
