@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { api } from "../api/client.js";
 import Alert from "../components/Alert.jsx";
 
+import {
+  exportarPDF,
+  exportarExcel
+} from "../utils/exportarReportes.js";
+
 const hoy = new Date();
 
 const MESES = [
@@ -114,6 +119,107 @@ export default function Reportes() {
         ? detalle.length
         : renglones.length;
 
+  function prepararExportacion() {
+  const configuracion = {
+    titulo: config.label,
+    periodo:
+      tipo === "cumpleaneros"
+        ? `Mes: ${data.mes}`
+        : `Periodo: ${data.nombreMes} ${data.anio}`,
+    nombreArchivo:
+      tipo === "cumpleaneros"
+        ? `${tipo}-${mes}`
+        : `${tipo}-${anio}-${mes}`,
+    total: data.total,
+    mostrarTotal:
+      ["igss", "isr", "poliza-contable"].includes(tipo),
+    horizontal: tipo === "libro-salarios"
+  };
+
+  let columnas = [];
+  let filas = [];
+
+  if (tipo === "cumpleaneros") {
+    columnas = [
+      "No.",
+      "Empleado",
+      "Departamento",
+      "Fecha de nacimiento"
+    ];
+
+    filas = empleados.map((e, i) => [
+      i + 1,
+      `${e.nombres} ${e.apellidos}`,
+      e.departamento || "—",
+      formatoFecha(e.fecha_nacimiento)
+    ]);
+  }
+
+  if (tipo === "igss" || tipo === "isr") {
+    columnas = [
+      "No.",
+      "Empleado",
+      "Departamento",
+      "Monto"
+    ];
+
+    filas = detalle.map((d, i) => [
+      i + 1,
+      `${d.nombres} ${d.apellidos}`,
+      d.departamento || "—",
+      Number(d.monto || 0)
+    ]);
+  }
+
+  if (tipo === "poliza-contable") {
+    columnas = [
+      "No.",
+      "Código",
+      "Cuenta contable",
+      "Departamento",
+      "Monto"
+    ];
+
+    filas = renglones.map((r, i) => [
+      i + 1,
+      r.codigo,
+      r.cuenta_contable,
+      r.departamento || "—",
+      Number(r.monto || 0)
+    ]);
+  }
+
+  if (tipo === "libro-salarios") {
+    columnas = [
+      "No.",
+      "Departamento",
+      "Empleado",
+      "Sueldo base",
+      "Días laborados",
+      "Ingresos",
+      "Egresos",
+      "Líquido a pagar"
+    ];
+
+    filas = renglones.map((r, i) => [
+      i + 1,
+      r.departamento || "—",
+      `${r.nombres} ${r.apellidos}`,
+      Number(r.salario_base || 0),
+      Number(r.dias_laborados || 0),
+      Number(r.total_ingresos || 0),
+      Number(r.total_egresos || 0),
+      Number(r.liquido_a_pagar || 0)
+    ]);
+  }
+
+  return {
+    ...configuracion,
+    columnas,
+    filas
+  };
+}
+
   return (
     <div className="modulo-reportes">
       <div className="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
@@ -170,6 +276,31 @@ export default function Reportes() {
           </div>
         ))}
       </div>
+      
+      <div className="d-flex flex-wrap align-items-center gap-2">
+  <div className="reportes-conteo">
+    <i className="bi bi-list-ul me-2"></i>
+    {totalRegistros} registro(s)
+  </div>
+
+  <button
+    className="btn btn-danger"
+    onClick={() => exportarPDF(prepararExportacion())}
+    disabled={totalRegistros === 0}
+  >
+    <i className="bi bi-file-earmark-pdf me-2"></i>
+    PDF
+  </button>
+
+  <button
+    className="btn btn-success"
+    onClick={() => exportarExcel(prepararExportacion())}
+    disabled={totalRegistros === 0}
+  >
+    <i className="bi bi-file-earmark-excel me-2"></i>
+    Excel
+  </button>
+</div>
 
       <div className="card reportes-filtros mb-4">
         <div className="card-body p-4">
