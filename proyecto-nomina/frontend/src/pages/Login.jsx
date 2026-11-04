@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   useNavigate,
@@ -24,7 +23,7 @@ export default function Login() {
   const [cargando, setCargando] = useState(false);
 
   if (token) {
-    const destino = location.state?.from?.pathname || "/reportes";
+    const destino = location.state?.from?.pathname || "/dashboard";
     return <Navigate to={destino} replace />;
   }
 
@@ -38,15 +37,17 @@ export default function Login() {
       await iniciarSesion(nombre_usuario, password);
 
       navigate(
-        location.state?.from?.pathname || "/reportes",
+        location.state?.from?.pathname || "/dashboard",
         { replace: true }
       );
     } catch (err) {
-      setError(err.message);
+      setError("Usuario o contraseña incorrectos")
     } finally {
       setCargando(false);
     }
   }
+
+  const [mostrarPassword, setMostrarPassword] = useState(false);
 
   return (
     <div className="login-screen">
@@ -76,7 +77,12 @@ export default function Login() {
 
             <form onSubmit={onSubmit}>
 
-              <Alert type="error">{error}</Alert>
+              {error && (
+                <div className="login-error">
+                  <i className="bi bi-exclamation-circle-fill"></i>
+                  <span>{error}</span>
+                </div>
+              )}
 
               {/* USUARIO */}
               <div className="login-field">
@@ -117,7 +123,7 @@ export default function Login() {
 
                   <input
                     id="password"
-                    type="password"
+                    type={mostrarPassword ? "text" : "password"}
                     placeholder="Ingrese su contraseña"
                     autoComplete="current-password"
                     value={password}
@@ -127,6 +133,15 @@ export default function Login() {
                     required
                     disabled={cargando}
                   />
+                  <button
+                    type="button"
+                    className="login-password-toggle"
+                    onClick={() => setMostrarPassword(!mostrarPassword)}
+                    disabled={cargando}
+                    aria-label={mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  >
+                    <i className={`bi ${mostrarPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                  </button>
                 </div>
 
               </div>

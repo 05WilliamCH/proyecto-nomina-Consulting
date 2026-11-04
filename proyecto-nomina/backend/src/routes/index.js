@@ -17,5 +17,6 @@ router.use("/parametros", require("./parametros"));
 router.use("/usuarios", require("./usuarios"));
 router.use("/tienda", require("./tienda"));
 router.use("/historial-laboral", require("./historial"));
+router.use("/dashboard", require("./dashboard"));
 
 module.exports = router;

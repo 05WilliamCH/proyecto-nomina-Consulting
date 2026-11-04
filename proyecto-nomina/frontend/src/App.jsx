@@ -15,10 +15,17 @@ import Parametros from "./pages/Parametros.jsx";
 import Perfil from "./pages/Perfil.jsx";
 import Usuarios from "./pages/Usuarios.jsx";
 
+import Dashboard from "./pages/Dashboard.jsx";
+
 // Cada link declara que roles pueden verlo. "null" = cualquier usuario
 // autenticado (RRHH, Contabilidad o Administrador).
 
 const links = [
+
+  { to: "/dashboard", 
+    label: "Dashboard", 
+    icon: "bi-speedometer2",
+    roles: null },
   {
     to: "/empleados",
     label: "Empleados",
@@ -69,12 +76,15 @@ function Shell() {
 
   const [sidebarVisible, setSidebarVisible] = useState(true);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); //Version mobil sidebar
+
   const visibles = links.filter(
     (l) => !l.roles || l.roles.includes(usuario?.rol)
   );
 
   return (
-    <div className={`layout ${!sidebarVisible ? "sidebar-collapsed" : ""}`}>
+    <div className={`layout ${!sidebarVisible ? "sidebar-collapsed" : ""}
+                            ${mobileMenuOpen ? "mobile-menu-open" : ""} `}>
 
       {/* SIDEBAR */}
       <aside className="sidebar">
@@ -88,9 +98,11 @@ function Shell() {
               <i className="bi bi-wallet2"></i>
             </div>
 
-            <div>
-              <h1>Sistema de Nómina</h1>
-              <span>Consulting, S.A.</span>
+            <div className="main-toolbar">
+               <span className="toolbar-title">
+                <h1>Sistema de Nomina</h1>
+                Consulting S.A.
+               </span>
             </div>
           </div>
         )}
@@ -109,6 +121,15 @@ function Shell() {
         >
           <i className={`bi ${sidebarVisible ? "bi-chevron-left" : "bi-chevron-right"}`}></i>
         </button>
+        {/* Botón para cerrar en teléfono */}
+        <button
+          type="button"
+          className="btn-close-mobile d-md-none"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Cerrar menú"
+        >
+          <i className="bi bi-x-lg"></i>
+        </button>
 
       </div>
 
@@ -126,13 +147,14 @@ function Shell() {
               key={l.to}
               to={l.to}
               title={!sidebarVisible ? l.label : ""}
+              onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
                 `sidebar-link ${isActive ? "active" : ""}`
               }
             >
               <i className={`bi ${l.icon}`}></i>
 
-              {sidebarVisible && (
+              {(sidebarVisible || mobileMenuOpen) && (
                 <span>{l.label}</span>
               )}
             </NavLink>
@@ -141,47 +163,37 @@ function Shell() {
         </nav>
 
         {/* PARTE INFERIOR */}
+        <div className="sidebar-bottom">
 
-          <div className="sidebar-bottom">
-
-          {/* PERFIL */}
+          {/* PERFIL Y USUARIO */}
           <NavLink
             to="/perfil"
-            title={!sidebarVisible ? "Mi perfil" : ""}
+            title={!sidebarVisible ? usuario?.nombre_usuario || "Mi perfil" : ""}
+            onClick={() => setMobileMenuOpen(false)}
             className={({ isActive }) =>
               `sidebar-profile-link ${isActive ? "active" : ""}`
             }
           >
-            <i className="bi bi-person-circle"></i>
+            <div className="sidebar-avatar">
+              <i className="bi bi-person-circle"></i>
+            </div>
 
             {sidebarVisible && (
               <>
-                <span>Mi perfil</span>
+                <div className="sidebar-user-info">
+                  <div className="sidebar-user-name">
+                    {usuario?.nombre_usuario}
+                  </div>
+
+                  <div className="sidebar-user-role">
+                    {usuario?.rol}
+                  </div>
+                </div>
+
                 <i className="bi bi-chevron-right profile-arrow"></i>
               </>
             )}
           </NavLink>
-
-          {/* USUARIO */}
-          <div className="sidebar-user">
-
-            <div className="sidebar-avatar">
-              <i className="bi bi-person-fill"></i>
-            </div>
-
-            {sidebarVisible && (
-              <div className="sidebar-user-info">
-                <div className="sidebar-user-name">
-                  {usuario?.nombre_usuario}
-                </div>
-
-                <div className="sidebar-user-role">
-                  {usuario?.rol}
-                </div>
-              </div>
-            )}
-
-          </div>
 
           {/* CERRAR SESIÓN */}
           <button
@@ -200,10 +212,26 @@ function Shell() {
 
       </aside>
 
+      {mobileMenuOpen && (
+        <div
+          className="sidebar-overlay"
+          aria-hidden="true"
+          onClick={() => setMobileMenuOpen(false)}
+        ></div>
+)}
+
       {/* CONTENIDO */}
       <main className="main">
           {/* BARRA SUPERIOR */}
         <div className="main-toolbar">
+          <button
+            type="button"
+            className="btn btn-outline-primary d-md-none me-2"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Abrir menú"
+          >
+            <i className="bi bi-list fs-4"></i>
+          </button>
           <span className="toolbar-title">
             Sistema de Nómina
           </span>
@@ -211,10 +239,19 @@ function Shell() {
 
         <Routes>
 
+
           <Route
             path="/"
-            element={<Navigate to="/reportes" replace />}
+            element={<Navigate to="/dashboard" replace />}
           />
+          
+
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>} />
 
           <Route
             path="/empleados"

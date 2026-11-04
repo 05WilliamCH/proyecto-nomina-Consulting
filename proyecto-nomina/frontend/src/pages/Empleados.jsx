@@ -5,6 +5,7 @@ const EMPTY = {
   nombres:"", apellidos:"", fecha_nacimiento:"", fecha_ingreso:"",
   id_departamento:"", id_puesto:"", dpi:"", nit:"",
   banco: "", tipo_cuenta_banco: "", numero_cuenta_banco: "",
+  direccion: "", telefono: "",
   salario_base:"", dias_laborados:30, estado:"Activo",
 };
 
@@ -72,6 +73,8 @@ export default function Empleados() {
       salario_base:    emp.salario_base,
       dias_laborados:  emp.dias_laborados,
       estado:          emp.estado,
+      direccion:       emp.direccion ?? "", // Campo nuevo
+      telefono:        emp.telefono ?? "", // Campo nuevo
     });
     openModal(modalFormRef);
   }
@@ -93,6 +96,8 @@ export default function Empleados() {
         banco:               form.banco.trim() || null,
         tipo_cuenta_banco:   form.tipo_cuenta_banco || null,
         numero_cuenta_banco: form.numero_cuenta_banco.trim() || null,
+        direccion:           form.direccion.trim() || null, // Campo nuevo
+        telefono:            form.telefono.trim() || null,  // Campo nuevo
       };
       if (editId) {
         await api.put(`/empleados/${editId}`, payload);
@@ -357,6 +362,17 @@ const empleadosPaginados = empleadosFiltrados.slice(
                   <div className="col-md-6">
                     <label className="form-label fw-semibold">Apellidos <span className="text-danger">*</span></label>
                     <input className="form-control" required value={form.apellidos} onChange={f("apellidos")} />
+                  </div>
+
+                  <div className="col-md-8">
+                    <label className="form-label fw-semibold">Dirección</label>
+                    <input className="form-control" placeholder="Ciudad, Zona..." 
+                      value={form.direccion} onChange={f("direccion")} />
+                  </div>
+                  <div className="col-md-4">
+                    <label className="form-label fw-semibold">Teléfono</label>
+                    <input className="form-control" placeholder="12345678" 
+                      value={form.telefono} onChange={f("telefono")} />
                   </div>
 
                   <div className="col-md-6">

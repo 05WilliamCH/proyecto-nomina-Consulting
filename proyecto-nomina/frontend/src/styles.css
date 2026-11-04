@@ -1849,3 +1849,159 @@ body {
     padding: 18px !important;
   }
 }
+
+
+/* =====================================
+   SIDEBAR RESPONSIVE PARA MOVILES
+===================================== */
+
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+
+  .layout {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Sidebar oculto inicialmente */
+  .layout .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    max-width: 85vw;
+    height: 100vh;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+
+  /* Sidebar visible */
+  .layout.mobile-menu-open .sidebar {
+    transform: translateX(0);
+  }
+
+  /* En móvil no se utiliza el modo contraído */
+  .layout.sidebar-collapsed .sidebar {
+    width: 260px;
+  }
+
+  .layout.sidebar-collapsed .sidebar .sidebar-brand-info,
+  .layout.sidebar-collapsed .sidebar .sidebar-section-title,
+  .layout.sidebar-collapsed .sidebar .sidebar-link span,
+  .layout.sidebar-collapsed .sidebar .sidebar-profile-link span,
+  .layout.sidebar-collapsed .sidebar .sidebar-user-info,
+  .layout.sidebar-collapsed .sidebar .btn-logout span {
+    display: initial;
+  }
+
+  /* Fondo oscuro */
+  .layout.mobile-menu-open .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1040;
+  }
+
+  /* Contenido principal */
+  .layout .main {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    flex: 1;
+  }
+
+  .main-toolbar {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 15px;
+  }
+
+  /* Evitar desbordamientos */
+  .main > div:not(.main-toolbar) {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .main .card {
+    max-width: 100%;
+  }
+
+  .main .table-responsive {
+    overflow-x: auto;
+  }
+
+}
+
+/* =====================================
+   CORRECCIÓN ICONO MOSTRAR CONTRASEÑA
+===================================== */
+
+.login-input-wrapper {
+  position: relative;
+}
+
+.login-input-wrapper input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.login-password-toggle i {
+  font-size: 18px;
+  color: inherit;
+  pointer-events: none;
+}
+
+.login-password-toggle:hover {
+  color: #2563eb;
+}
+
+.login-password-toggle:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* MENSAJE DE ERROR DEL LOGIN */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.login-error i {
+  font-size: 16px;
+  color: #dc2626;
+}

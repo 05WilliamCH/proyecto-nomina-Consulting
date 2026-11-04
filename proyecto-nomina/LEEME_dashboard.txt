@@ -1,0 +1,39 @@
+DASHBOARD CON GRAFICAS — como instalarlo
+=========================================
+
+1) COPIAR estos 4 archivos NUEVOS (misma ruta):
+   backend/src/routes/dashboard.js
+   backend/src/db/seedDemo.js
+   frontend/src/pages/Dashboard.jsx
+   frontend/src/pages/dashboardCharts.js
+
+2) EDITAR 5 archivos existentes (cambios pequenos):
+
+   a) backend/src/routes/index.js  -> agregar UNA linea (junto a las demas):
+        router.use("/dashboard", require("./dashboard"));
+
+   b) backend/package.json  -> dentro de "scripts" agregar:
+        "db:demo": "node src/db/seedDemo.js"
+
+   c) frontend (terminal en la carpeta frontend):
+        npm install chart.js react-chartjs-2
+
+   d) frontend/src/App.jsx  -> 3 cambios:
+        - import:   import Dashboard from "./pages/Dashboard.jsx";
+        - en el arreglo "links", como PRIMER elemento:
+            { to: "/dashboard", label: "Dashboard", roles: null },
+        - junto a las demas <Route>, dentro de <Routes>:
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        - (opcional) pagina de inicio: cambiar el redirect de "/" a "/dashboard":
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+   e) (opcional) frontend/src/components/ProtectedRoute.jsx y frontend/src/pages/Login.jsx:
+        donde diga "/reportes" como destino por defecto, cambiarlo a "/dashboard".
+
+3) DATOS DE DEMOSTRACION (las graficas salen vacias sin nomina calculada):
+        cd backend
+        npm run db:demo
+   Genera 6 meses de nomina usando sp_calcular_anticipo y sp_calcular_nomina_fin_de_mes.
+   Es idempotente: los meses que ya tengan datos se omiten. Los montos son ficticios.
+
+No cambia la base de datos: no hace falta volver a ejecutar db:init.
