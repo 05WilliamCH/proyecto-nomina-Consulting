@@ -1,14 +1,16 @@
+
 const { Pool } = require("pg");
 require("dotenv").config();
 
-// Pool de conexiones a PostgreSQL. Los valores se leen de variables de
-// entorno (ver .env.example) para no dejar credenciales en el codigo.
 const pool = new Pool({
-  host: process.env.PGHOST || "localhost",
-  port: Number(process.env.PGPORT) || 5432,
-  database: process.env.PGDATABASE || "nomina_consulting1",
-  user: process.env.PGUSER || "postgres",
-  password: process.env.PGPASSWORD || "CHIroy23",
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT) || 5432,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 pool.on("error", (err) => {

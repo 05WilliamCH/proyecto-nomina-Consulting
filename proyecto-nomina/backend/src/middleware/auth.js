@@ -3,21 +3,59 @@
 // ============================================================
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../services/authService");
+const pool = require("../config/db");
 
 // Exige un JWT valido en el header "Authorization: Bearer <token>".
-function requiereLogin(req, res, next) {
+
+async function requiereLogin(req, res, next) {
   const header = req.headers.authorization || "";
   const [scheme, token] = header.split(" ");
+
   if (scheme !== "Bearer" || !token) {
     return res.status(401).json({ error: "No autenticado" });
   }
+
   try {
-    req.usuario = jwt.verify(token, JWT_SECRET);
+    const usuarioToken = jwt.verify(token, JWT_SECRET);
+
+    const { rows } = await pool.query(
+      `SELECT id_usuario, nombre_usuario, id_rol, estado
+       FROM usuario
+       WHERE id_usuario = $1`,
+      [usuarioToken.id_usuario]
+    );
+
+    const usuarioBD = rows[0];
+
+    if (!usuarioBD || usuarioBD.estado !== "Activo") {
+      return res.status(401).json({
+        error: "Usuario inexistente o inactivo"
+      });
+    }
+
+    req.usuario = {
+      ...usuarioToken,
+      id_usuario: usuarioBD.id_usuario,
+      nombre_usuario: usuarioBD.nombre_usuario
+    };
+
     next();
   } catch (err) {
-    return res.status(401).json({ error: "Token invalido o expirado" });
+    if (err.name === "JsonWebTokenError" ||
+        err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        error: "Token invalido o expirado"
+      });
+    }
+
+    console.error("Error verificando autenticacion:", err);
+
+    return res.status(500).json({
+      error: "Error interno de autenticacion"
+    });
   }
 }
+
 
 // Exige que el usuario autenticado tenga uno de los roles indicados.
 // Uso: router.post("/", permitirRoles("Administrador"), ctrl)

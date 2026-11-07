@@ -3,6 +3,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const routes = require("./routes");
 const { requiereLogin } = require("./middleware/auth");
+const pool = require("./config/db");
 
 const app = express();
 
@@ -11,6 +12,30 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/health", (req, res) => res.json({ status: "ok", servicio: "nomina-backend" }));
+// Prueba temporal de conexión con PostgreSQL
+app.get("/api/db-health", async (req, res) => {
+  const token = process.env.DB_HEALTH_TOKEN;
+
+  if (!token || req.get("x-db-health-token") !== token) {
+    return res.status(404).json({ error: "Ruta no encontrada" });
+  }
+
+  try {
+    await pool.query("SELECT 1");
+
+    return res.json({
+      status: "ok",
+      database: "connected"
+    });
+  } catch (error) {
+    console.error("Error de conexión con PostgreSQL:", error);
+
+    return res.status(503).json({
+      status: "error",
+      database: "unavailable"
+    });
+  }
+});
 
 // Login es publico; todo lo demas bajo /api exige un JWT valido
 // (ver src/middleware/auth.js). La autorizacion fina por rol se aplica

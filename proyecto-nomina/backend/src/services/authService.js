@@ -9,7 +9,10 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const pool = require("../config/db");
 
-const JWT_SECRET = process.env.JWT_SECRET || "cambiar-este-secreto-en-produccion";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("La variable JWT_SECRET no está configurada");
+}
 const JWT_EXPIRES_IN = "8h";
 const RESET_TOKEN_TTL_MINUTOS = 30;
 

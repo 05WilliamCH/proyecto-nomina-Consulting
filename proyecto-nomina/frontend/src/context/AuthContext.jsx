@@ -23,6 +23,13 @@ export function AuthProvider({ children }) {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("sesion invalida");
+
+        const data = await res.json();
+
+        if (data.usuario) {
+          localStorage.setItem(USER_KEY, JSON.stringify(data.usuario));
+          setUsuario(data.usuario);
+        }
       } catch {
         cerrarSesion();
       } finally {
